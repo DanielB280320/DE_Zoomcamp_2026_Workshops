@@ -64,3 +64,46 @@ Which was the pick up day with the longest trip distance? Only consider trips wi
 
 Which was the pickup zone with the largest total_amount (sum of all trips) on November 18th, 2025?
 
+    Answer: 
+        East Harlem North
+
+    SELECT T.*
+
+    FROM (SELECT Z."Zone" AS PUZone, 
+                COUNT(*) AS TotalAmount
+                
+        FROM public.ny_green_taxi_trips T_
+        LEFT JOIN public.ny_trip_zones Z
+            ON T_."PULocationID" = Z."LocationID"
+        WHERE T_.lpep_pickup_datetime BETWEEN '2025-11-18' AND '2025-11-19'
+        GROUP BY Z."Zone") T
+    ORDER BY TotalAmount DESC
+    LIMIT 1
+    ;
+            
+<b> Question 6. Largest tip </b>
+
+For the passengers picked up in the zone named "East Harlem North" in November 2025, which was the drop off zone that had the largest tip?
+
+    Answer: 
+        Yorkville West - 81.89
+
+    SELECT T.*
+
+    FROM (SELECT T_."PULocationID", 
+                PUZ."Zone" AS PUZone, 
+                T_."DOLocationID",
+                DOZ."Zone" AS DOZone,
+                T_.tip_amount
+                
+        FROM public.ny_green_taxi_trips T_
+        LEFT JOIN public.ny_trip_zones PUZ
+            ON T_."PULocationID" = PUZ."LocationID"
+        LEFT JOIN public.ny_trip_zones DOZ
+            ON T_."DOLocationID" = DOZ."LocationID"
+        WHERE T_.lpep_pickup_datetime BETWEEN '2025-11-01' AND '2025-12-01'
+        ) T
+    WHERE T.PUZone = 'East Harlem North'
+    ORDER BY T.tip_amount DESC
+    LIMIT 1
+    ;
