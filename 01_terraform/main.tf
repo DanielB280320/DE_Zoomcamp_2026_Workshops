@@ -16,7 +16,7 @@ provider "google" {
 resource "google_storage_bucket" "demo-bucket" {
   name          = var.gcs_bucket_name 
   location      = var.location
-  #force_destroy = true
+  force_destroy = true
 
   lifecycle_rule {
     condition {
